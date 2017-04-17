@@ -1,27 +1,34 @@
 <?php
 /**
- * Adds a recursive version of get_field for use with Advanced Custom Fields (ACF)
+ * Adds 'acf_recursive' shortcode for use with Advanced Custom Fields (ACF)
  *
  * This plugin adds a shortcode for use with Advanced Custom Fields (ACF) that 
- * works like get_field(); however, if the requested field is empty, the parent
- * of the given post will be evaluated for said field.  If the parent doesn't 
- * have a value, its parent (i.e., the post's ancestors) are each examined until
- * either a value is found or there are no more ancestors to call.  If nothing is
- * found in the post or its ancestors, false is returned.
+ * works like the 'acf' shortcode (e.g., calling get_field()); however, if the
+ * requested field is empty, the parent of the given post will be examined for 
+ * said field.  If the parent doesn't have a value, its parent (i.e., the 
+ * post's ancestors) are each examined until either a value is found or there 
+ * are no more ancestors to call.  If nothing is found in the post or any of 
+ * its ancestors, false is returned.
+ * 
+ * This was originally based on Jacob Rudenstam's Github Gist posting 
+ * "get-field-recursive.php" at https://gist.github.com/jrudenstam/7551729
  *
- * @link              http://kdaweb.com
- * @since             1.0.0
+ * @copyright         2017 KDA Web Technologies, Inc.
+ * @link              http://kdaweb.com/ KDA Web Technologies, Inc.
+ * @author            KDA Web Technologies, Inc. <info@kdaweb.com>
+ * @license           http://directory.fsf.org/wiki/License:BSD_3Clause Modified BSD (3-Clause) License
  * @package           acf_get_field_recursive
+ * @version           1.0.1
  *
  * @wordpress-plugin
- * Plugin Name:       ACF get_field recursively
+ * Plugin Name:       Recursive ACF shortcode
  * Plugin URI:        http://kdaweb.com/
- * Description:       Adds a shortcode, 'get_field_recursive', that recursively calls get_field on the post and its ancestors
- * Version:           1.0.0
+ * Description:       Adds a recursive shortcode that searches the post and its ancestors
+ * Version:           1.0.1
  * Author:            KDA Web Technologies, Inc.
  * Author URI:        http://kdaweb.com/
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * License:           Modified BSD (3-Clause) License
+ * License URI:       http://directory.fsf.org/wiki/License:BSD_3Clause
  * Text Domain:       acf_get_field_recursive
  * Domain Path:       /languages
  */
@@ -31,56 +38,92 @@ if ( ! defined ('WPINC')) {
   die;
 }
 
-if (! class_exists (acf_get_field_recursive_plugin)) {
-  class acf_get_field_recursive_plugin {
-    public static function get_field_recursive ($attributes) {
-
-      $attributes = shortcode_atts (
-        array (
-          'field' => '',
-        ),
-        $attributes,
-        'get_field_recursive'
-      );
-
-      return get_field_recursive_worker ($attributes['field'], null);
-    }
+/**
+ * function to accept attributes from the shortcode and get_field_recursive
+ * 
+ * This function acquires the attributes sent to the shortcode, unpacks them,
+ * and calls get_field_recursive() with the requested field.
+ * 
+ * @return string the value of the requested field or false if not found
+ * @since 1.0.1
+ */
+function acf_recursive () {
+  $attributes = shortcode_atts (
+    array (
+      'field'        => null,
+      'post_id'      => get_queried_object_id(),
+      'format_value' => true,
+    ),
+    $attributes,
+    'acf_recursive'
+  );
   
-    add_shortcode('get_field_recursive', 'get_field_recursive');
+  return get_field_recursive ($attributes['field'], 
+                              $attributes['post_id'],
+                              $attributes['format_value']);
+}
 
-    /* 
-     * Get ACF fields recursivly
-     * (if post does not have value look upward until found)
-     */
-    private static function get_field_recursive_worker ($field, $level_id = null) {
-      // If no ID is passed set to post ID
-      $level_id = $level_id == null ? get_queried_object_id() : $level_id;
-      $return_value = get_field ($field, $level_id);
-      $ancestors = get_post_ancestors ($level_id);
+
+/** 
+ * search Advanced Custom Fields (ACF) fields recursively and return value
+ * 
+ * Advanced Custom Fields (ACF) provides a function, get_field(), that accepts 
+ * an attribute, 'field', that contains the field for which to search in the 
+ * given page.  The ancestors of the post are not examined -- only the requested
+ * post.
+ * 
+ * This function recursively examines the current post (as with get_field()) but
+ * also examines the post's ancestors until either a value is found and 
+ * returned or there are no more ancestors to examine in which case false is 
+ * returned.
+ * 
+ * @param string $field the field for which to search
+ * @param int $post_id the id of the post to search; defaults to current post
+ * @param boolean $format_value true (default) to format results; false if not
+ * @return string value of the custom field if found; false if not
+ * @since 1.0.0
+ * 
+ */
+function get_field_recursive ($field, 
+                              $post_id = null, 
+                              $format_value = true) {
   
-      if (! trim ($field)) {
+  // if no post_id is provided, get the current post's id
+  // see https://codex.wordpress.org/Function_Reference/get_queried_object
+  if ($post_id == null) {
+    $post_id = get_queried_object_id();
+  }
+  
+  // call ACF's get_field to get the requested custom field
+  // see https://www.advancedcustomfields.com/resources/get_field/
+  $return_value = get_field ($field, $post_id, $format_value);
 
-        // return false if no field was supplied
-        return false;
+  // if we get back a value, return it
+  if ($return_value) {
 
-      } else if ($return_value) {
+    return $return_value;
 
-        // Return field value when found
-        return $return_value;
+  } else {
 
-      } else if ($ancestors) {
+    // get the post's closest ancestor (its parent)
+    // see http://codex.wordpress.org/Function_Reference/get_post_ancestors
+    $ancestors = get_post_ancestors ($post_id);
 
-        // Get closest ancecstor: http://codex.wordpress.org/Function_Reference/get_post_ancestors
-        $level_id = $ancestors[0];
-        return get_field_recursive_worker ($field, $level_id);
+    if ($ancestors) {
 
-      } else {
+      $post_id = $ancestors[0];
+      return get_field_recursive ($field, $post_id, $format_value);
 
-        // Return false if value is not found nor have ancestors
-        return false;
+    } else {
 
-      }
-    } // end function
-  } // end class
-} // end if (! class_exists)
+      // if value is not found and there are no more ancestors, return false
+      return false;
+      
+    } // end if ($ancestors)
+  } // end if ($return_value) } else {
+} // end function
+
+// finally, register the shortcode
+// see https://codex.wordpress.org/Function_Reference/add_shortcode
+add_shortcode('acf_recursive', 'acf_recursive');
 ?>
