@@ -12,13 +12,18 @@
  * 
  * This was originally based on Jacob Rudenstam's Github Gist posting 
  * "get-field-recursive.php" at https://gist.github.com/jrudenstam/7551729
+ * 
+ * Changelog:
+ *   v1.0.0: initial release; support for only 'field' attribute
+ *   v1.0.1: full get_field compatability; logic and structure massage
+ *   v1.0.2: added Plugin Update Checker (PUC) functionality
  *
  * @copyright         2017 KDA Web Technologies, Inc.
  * @link              http://kdaweb.com/ KDA Web Technologies, Inc.
  * @author            KDA Web Technologies, Inc. <info@kdaweb.com>
  * @license           http://directory.fsf.org/wiki/License:BSD_3Clause Modified BSD (3-Clause) License
  * @package           acf_get_field_recursive
- * @version           1.0.1
+ * @version           1.0.2
  *
  * @wordpress-plugin
  * Plugin Name:       Recursive ACF shortcode
@@ -37,6 +42,16 @@
 if ( ! defined ('WPINC')) {
   die;
 }
+
+// allow updating of plugin from Github
+// see https://github.com/YahnisElsts/plugin-update-checker#github-integration
+require 'plugin-update-checker/plugin-update-checker.php';
+$myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+	'https://github.com/wesley-dean/acf_get_field_recursive/',
+	__FILE__,
+	'acf_get_field_recursive'
+);
+
 
 /**
  * function to accept attributes from the shortcode and get_field_recursive
