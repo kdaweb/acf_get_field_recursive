@@ -47,7 +47,7 @@ if ( ! defined ('WPINC')) {
 // see https://github.com/YahnisElsts/plugin-update-checker#github-integration
 require 'plugin-update-checker/plugin-update-checker.php';
 $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-	'https://github.com/wesley-dean/acf_get_field_recursive/',
+	'https://github.com/kdaweb/acf_get_field_recursive/',
 	__FILE__,
 	'acf_get_field_recursive'
 );
