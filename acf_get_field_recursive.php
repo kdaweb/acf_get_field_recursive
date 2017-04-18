@@ -17,19 +17,21 @@
  *   v1.0.0: initial release; support for only 'field' attribute
  *   v1.0.1: full get_field compatability; logic and structure massage
  *   v1.0.2: added Plugin Update Checker (PUC) functionality
+ *   v1.0.3: bug fixes
+ *   v1.0.4: bug fixes
  *
  * @copyright         2017 KDA Web Technologies, Inc.
  * @link              http://kdaweb.com/ KDA Web Technologies, Inc.
  * @author            KDA Web Technologies, Inc. <info@kdaweb.com>
  * @license           http://directory.fsf.org/wiki/License:BSD_3Clause Modified BSD (3-Clause) License
  * @package           acf_get_field_recursive
- * @version           1.0.3
+ * @version           1.0.4
  *
  * @wordpress-plugin
  * Plugin Name:       Recursive ACF shortcode
  * Plugin URI:        http://kdaweb.com/
  * Description:       Adds a recursive shortcode that searches the post and its ancestors
- * Version:           1.0.3
+ * Version:           1.0.4
  * Author:            KDA Web Technologies, Inc.
  * Author URI:        http://kdaweb.com/
  * License:           Modified BSD (3-Clause) License
@@ -59,11 +61,14 @@ $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
  * This function acquires the attributes sent to the shortcode, unpacks them,
  * and calls get_field_recursive() with the requested field.
  * 
+ * @param string[] $attributes attributes data structure provided by WordPress
  * @return string the value of the requested field or false if not found
  * @since 1.0.1
  */
-function acf_recursive () {
-  $attributes = shortcode_atts (
+function acf_recursive ($attributes) {
+  
+  // See https://codex.wordpress.org/Function_Reference/shortcode_atts
+  $atts = shortcode_atts (
     array (
       'field'        => null,
       'post_id'      => get_queried_object_id(),
@@ -73,9 +78,9 @@ function acf_recursive () {
     'acf_recursive'
   );
   
-  return get_field_recursive ($attributes['field'], 
-                              $attributes['post_id'],
-                              $attributes['format_value']);
+  return get_field_recursive ($atts['field'], 
+                              $atts['post_id'],
+                              $atts['format_value']);
 }
 
 
@@ -120,14 +125,14 @@ function get_field_recursive ($field,
 
   } else {
 
-    // get the post's closest ancestor (its parent)
+    // get the post's ancestor
     // see http://codex.wordpress.org/Function_Reference/get_post_ancestors
     $ancestors = get_post_ancestors ($post_id);
 
     if ($ancestors) {
 
-      $post_id = $ancestors[0];
-      return get_field_recursive ($field, $post_id, $format_value);
+      $parent_id = $ancestors[0];
+      return get_field_recursive ($field, $parent_id, $format_value);
 
     } else {
 
