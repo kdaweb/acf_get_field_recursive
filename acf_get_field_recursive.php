@@ -19,7 +19,7 @@
  *   v1.0.2: added Plugin Update Checker (PUC) functionality
  *   v1.0.3: bug fixes
  *   v1.0.4: bug fixes
- *   v1.0.5: inclusion of test content, particularly for Travis CI
+ *   v1.0.5: inclusion of test content; now explicitly requires ACF at activation
  *
  * @copyright         2017 KDA Web Technologies, Inc.
  * @link              http://kdaweb.com/ KDA Web Technologies, Inc.
