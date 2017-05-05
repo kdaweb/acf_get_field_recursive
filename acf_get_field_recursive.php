@@ -19,19 +19,20 @@
  *   v1.0.2: added Plugin Update Checker (PUC) functionality
  *   v1.0.3: bug fixes
  *   v1.0.4: bug fixes
+ *   v1.0.5: inclusion of test content, particularly for Travis CI
  *
  * @copyright         2017 KDA Web Technologies, Inc.
  * @link              http://kdaweb.com/ KDA Web Technologies, Inc.
  * @author            KDA Web Technologies, Inc. <info@kdaweb.com>
  * @license           http://directory.fsf.org/wiki/License:BSD_3Clause Modified BSD (3-Clause) License
  * @package           acf_get_field_recursive
- * @version           1.0.4
+ * @version           1.0.5
  *
  * @wordpress-plugin
  * Plugin Name:       Recursive ACF shortcode
  * Plugin URI:        http://kdaweb.com/
  * Description:       Adds a recursive shortcode that searches the post and its ancestors
- * Version:           1.0.4
+ * Version:           1.0.5
  * Author:            KDA Web Technologies, Inc.
  * Author URI:        http://kdaweb.com/
  * License:           Modified BSD (3-Clause) License
