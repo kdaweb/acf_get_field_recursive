@@ -47,8 +47,9 @@ if ( ! defined ('WPINC')) {
 }
 
 // allow updating of plugin from Github
-// see https://github.com/YahnisElsts/plugin-update-checker#github-integration
+// see: https://github.com/YahnisElsts/plugin-update-checker#github-integration
 require 'plugin-update-checker/plugin-update-checker.php';
+
 $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker (
 	'https://github.com/kdaweb/acf_get_field_recursive/',
 	__FILE__,
@@ -68,11 +69,11 @@ $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker (
  */
 function acf_recursive ($attributes) {
   
-  // See https://codex.wordpress.org/Function_Reference/shortcode_atts
+  // see: https://codex.wordpress.org/Function_Reference/shortcode_atts
   $atts = shortcode_atts (
     array (
       'field'        => null,
-      'post_id'      => get_queried_object_id(),
+      'post_id'      => get_queried_object_id(), // see https://developer.wordpress.org/reference/functions/get_queried_object_id/
       'format_value' => true,
     ),
     $attributes,
@@ -110,13 +111,13 @@ function get_field_recursive ($field,
                               $format_value = true) {
   
   // if no post_id is provided, get the current post's id
-  // see https://codex.wordpress.org/Function_Reference/get_queried_object
+  // see: https://codex.wordpress.org/Function_Reference/get_queried_object
   if ($post_id == null) {
     $post_id = get_queried_object_id();
   }
   
   // call ACF's get_field to get the requested custom field
-  // see https://www.advancedcustomfields.com/resources/get_field/
+  // see: https://www.advancedcustomfields.com/resources/get_field/
   $return_value = get_field ($field, $post_id, $format_value);
 
   // if we get back a value, return it
@@ -127,7 +128,7 @@ function get_field_recursive ($field,
   } else {
 
     // get the post's ancestor
-    // see http://codex.wordpress.org/Function_Reference/get_post_ancestors
+    // see: http://codex.wordpress.org/Function_Reference/get_post_ancestors
     $ancestors = get_post_ancestors ($post_id);
 
     if ($ancestors) {
@@ -158,9 +159,11 @@ function get_field_recursive ($field,
  */
 function verify_acf_activated () {
 
+  // see: https://codex.wordpress.org/Function_Reference/is_plugin_active
+  // see: https://codex.wordpress.org/Function_Reference/current_user_can
   if ((! is_plugin_active ('advanced-custom-fields/acf.php'))
   && (current_user_can ('activate_plugins' ))) {
-    // Stop activation redirect and show error
+    // Stop activation redirect and show error; see: https://codex.wordpress.org/Function_Reference/wp_die
     wp_die ('This plugin requires Advanced Custom Fields to be installed and active. <br /><a href="' . admin_url ('plugins.php') . '">&laquo; Return to Plugins</a>');
   } // end if
   
@@ -169,10 +172,11 @@ function verify_acf_activated () {
 } // end function verify_acf_activated
 
 // register the shortcode
-// see https://codex.wordpress.org/Function_Reference/add_shortcode
+// see: https://codex.wordpress.org/Function_Reference/add_shortcode
 add_shortcode('acf_recursive', 'acf_recursive');
 
 // call the function to verify ACF activation
+// see: https://codex.wordpress.org/Function_Reference/register_activation_hook
 register_activation_hook ( __FILE__, 'verify_acf_activated');
 
 ?>
