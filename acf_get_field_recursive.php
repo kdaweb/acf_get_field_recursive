@@ -49,7 +49,7 @@ if ( ! defined ('WPINC')) {
 // allow updating of plugin from Github
 // see https://github.com/YahnisElsts/plugin-update-checker#github-integration
 require 'plugin-update-checker/plugin-update-checker.php';
-$myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+$myUpdateChecker = Puc_v4_Factory::buildUpdateChecker (
 	'https://github.com/kdaweb/acf_get_field_recursive/',
 	__FILE__,
 	'acf_get_field_recursive'
@@ -82,7 +82,7 @@ function acf_recursive ($attributes) {
   return get_field_recursive ($atts['field'], 
                               $atts['post_id'],
                               $atts['format_value']);
-}
+} // end function acf_recursive
 
 
 /** 
@@ -142,9 +142,37 @@ function get_field_recursive ($field,
       
     } // end if ($ancestors)
   } // end if ($return_value) } else {
-} // end function
+} // end function get_field_recursive
 
-// finally, register the shortcode
+
+/**
+ * verify that Advanced Custom Fields is active
+ * 
+ * This function verifies that the Advanced Custom Fields plugin is activated
+ * and will wp_die otherwise
+ * 
+ * see: https://wordpress.stackexchange.com/questions/127818/how-to-make-a-plugin-require-another-plugin
+ * 
+ * @return boolean true if ACF is activate; wp_die otherwise
+ * @since 1.0.5
+ */
+function verify_acf_activated () {
+
+  if ((! is_plugin_active ('advanced-custom-fields/acf.php'))
+  && (current_user_can ('activate_plugins' ))) {
+    // Stop activation redirect and show error
+    wp_die ('This plugin requires Advanced Custom Fields to be installed and active. <br /><a href="' . admin_url ('plugins.php') . '">&laquo; Return to Plugins</a>');
+  } // end if
+  
+  return true;
+  
+} // end function verify_acf_activated
+
+// register the shortcode
 // see https://codex.wordpress.org/Function_Reference/add_shortcode
 add_shortcode('acf_recursive', 'acf_recursive');
+
+// call the function to verify ACF activation
+register_activation_hook ( __FILE__, 'verify_acf_activated');
+
 ?>
