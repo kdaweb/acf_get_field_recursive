@@ -27,8 +27,8 @@ matrix:
       env: WP_VERSION=latest
     - php: 5.6
       env: WP_VERSION=trunk
-#    - php: 5.6
-#      env: WP_TRAVISCI=phpcs
+    - php: 5.6
+      env: WP_TRAVISCI=phpcs
     - php: 5.3
       env: WP_VERSION=latest
 
@@ -57,5 +57,5 @@ script:
     fi
   - |
     if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
-      phpcs --standard=phpcs.ruleset.xml $(find . -name '*.php')
+      phpcs --standard=phpcs.ruleset.xml $( find . -name '*.php' -a -'!' -regex '.*/tests?/.*' -a -'!' -regex '.*/vendor/.*' -a -'!' -regex '.*/plugin-update-checker/.*')
     fi

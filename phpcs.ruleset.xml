@@ -1,14 +1,71 @@
-<?xml version="1.0"?>
-<ruleset name="WordPress Coding Standards for Plugins">
-	<description>Generally-applicable sniffs for WordPress plugins</description>
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="kda">
+    <description>Created with the PHP Coding Standard Generator. http://edorian.github.com/php-coding-standard-generator/
+    </description>
 
-	<rule ref="WordPress-Core" />
-	<rule ref="WordPress-Docs" />
-
-	<exclude-pattern>*/node_modules/*</exclude-pattern>
-	<exclude-pattern>*/vendor/*</exclude-pattern>
-
-	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
-		<exclude-pattern>*/tests/*</exclude-pattern>
-	</rule>
+    <rule ref="Generic.Classes.DuplicateClassName" />
+    <rule ref="Generic.CodeAnalysis.EmptyStatement" />
+    <rule ref="Generic.CodeAnalysis.JumbledIncrementer" />
+    <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter" />
+    <rule ref="Generic.CodeAnalysis.UselessOverridingMethod" />
+    <rule ref="Generic.CodeAnalysis.ForLoopShouldBeWhileLoop"/>
+    <rule ref="Generic.CodeAnalysis.ForLoopWithTestFunctionCall"/>
+    <rule ref="Generic.CodeAnalysis.UnconditionalIfStatement"/>
+    <rule ref="Generic.ControlStructures.InlineControlStructure" />
+    <rule ref="Generic.CodeAnalysis.UnnecessaryFinalModifier"/>
+    <rule ref="Generic.Files.LineEndings" />
+    <rule ref="Generic.Files.LineLength" />
+    <rule ref="Generic.Formatting.DisallowMultipleStatements" />
+    <rule ref="Generic.Formatting.MultipleStatementAlignment">
+        <properties>
+            <property name="ignoreMultiLine" value="true"/>
+        </properties>
+    </rule>
+    
+    <rule ref="Generic.Formatting.SpaceAfterCast" />
+    <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie" />
+    <rule ref="Generic.Metrics.CyclomaticComplexity" />
+    <rule ref="Generic.Metrics.NestingLevel" />
+    <rule ref="Generic.NamingConventions.UpperCaseConstantName" />
+    <rule ref="Generic.PHP.DeprecatedFunctions" />
+    <rule ref="Generic.PHP.DisallowShortOpenTag" />
+    <rule ref="Generic.PHP.NoSilencedErrors" />
+    <rule ref="Generic.PHP.UpperCaseConstant" />
+    <rule ref="Generic.WhiteSpace.DisallowTabIndent" />
+    <rule ref="Generic.WhiteSpace.ScopeIndent">
+        <properties>
+            <property name="indent" value="2" />
+        </properties>
+    </rule>
+    <rule ref="MySource.PHP.ReturnFunctionValue" />
+    <rule ref="PEAR.Commenting.ClassComment" />
+    <rule ref="PEAR.Commenting.FileComment" />
+    <rule ref="PEAR.Commenting.FunctionComment" />
+    <rule ref="PEAR.ControlStructures.MultiLineCondition" />
+    <rule ref="PEAR.Formatting.MultiLineAssignment"/>
+    <rule ref="PEAR.Files.IncludingFile" />
+    <rule ref="PEAR.Functions.ValidDefaultValue" />
+    <rule ref="PEAR.NamingConventions.ValidVariableName" />
+    <rule ref="PEAR.WhiteSpace.ScopeClosingBrace">
+        <properties>
+            <property name="indent" value="2" />
+        </properties>
+    </rule>
+    <rule ref="PEAR.WhiteSpace.ScopeIndent">
+        <properties>
+            <property name="indent" value="2" />
+        </properties>
+    </rule>
+    <rule ref="PSR2.ControlStructures.ControlStructureSpacing" />
+    <rule ref="PSR2.ControlStructures.ElseIfDeclaration" />
+    <rule ref="Squiz.PHP.DisallowMultipleAssignments" />
+    <rule ref="Squiz.PHP.GlobalKeyword" />
+    <rule ref="Squiz.PHP.LowercasePHPFunctions" />
+    <rule ref="Squiz.WhiteSpace.FunctionSpacing"/>
+    <rule ref="Squiz.WhiteSpace.LanguageConstructSpacing"/>
+    <rule ref="Squiz.WhiteSpace.PropertyLabelSpacing"/>
+    <rule ref="Squiz.WhiteSpace.ScopeClosingBrace" />
+    <rule ref="Squiz.WhiteSpace.SemicolonSpacing" />
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace"/>
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
 </ruleset>
